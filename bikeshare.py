@@ -1,5 +1,4 @@
 from flask import Flask, render_template, request
-#from pyfladesk import init_gui
 import pandas as pd
 from numpy import arange
 import matplotlib
@@ -75,10 +74,6 @@ def bikeshare():
 
         #create time of day activity histogram - following example in this gist: https://gist.github.com/tebeka/5426211
         #and this stackoverflow answer: https://stackoverflow.com/questions/44091516/passing-a-plot-from-matpotlib-to-a-flask-view
-
-        #TODO: the basic plotting function for a simply x,y pair plot works! I just need to
-        #work on the below three lines to make a histogram. Probably a good idea to
-        #start with python in the terminal
         num_rentals_by_hour = pd.Series(data["Start Time"].map(lambda x: x.hour))
         fig = plt.figure()
         figure_bins = arange(25)
@@ -97,6 +92,5 @@ if __name__ == '__main__':
     chicago = pd.read_csv("chicago.csv")
     new_york_city = pd.read_csv("new_york_city.csv")
     washington = pd.read_csv("washington.csv")
-    #init_gui(app)
 
     app.run()

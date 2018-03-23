@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<title>Explore bikeshare data</title>
+  <link href="{{ url_for('static', filename='styles.css') }}" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com/css?family=VT323" rel="stylesheet">
+	<link rel="shortcut icon" href="{{ url_for('static', filename='favicon.ico') }}">
+</head>
+<body>
+  <h1>Explore bikeshare data</h1>
+	<form method="POST">
+		City: <select name="city">
+			<option value="all">All</option>
+			<option value="new york city">New York City</option>
+			<option value="chicago">Chicago</option>
+			<option value="washington dc">Washington DC</option>
+		</select>
+		Month: <select onchange="toggleDayOptions()" id="month" name="month">
+			<option value="all">All</option>
+			<option value="january">January</option>
+			<option value="february">February</option>
+			<option value="march">March</option>
+			<option value="april">April</option>
+			<option value="may">May</option>
+			<option value="june">June</option>
+			<option value="july">July</option>
+			<option value="august">August</option>
+			<option value="september">September</option>
+			<option value="october">October</option>
+			<option value="november">November</option>
+			<option value="december">December</option>
+		</select>
+		Day: <select id="day" name="day">
+			<option value="all">All</option>
+			<option value="select month" disabled>Select month</option>
+		</select>
+    <input type="submit">
+</form>
+<script src="{{ url_for('static', filename='script.js') }}" ></script>
+</body>

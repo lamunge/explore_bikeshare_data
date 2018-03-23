@@ -1,0 +1,28 @@
+* {
+    font-family: 'Roboto Mono', monospace;
+    background-color: #272822;
+    color: #F8F8F2;
+    text-align: center;
+}
+
+h1 {
+  font-size: 50px;
+  color: #ea85f2;
+}
+
+h2 {
+  color: #7edfea;
+}
+
+form {
+  font-size: 30px;
+}
+
+span {
+  color: #A6E22E;
+}
+
+button {
+  width: 55px;
+  height: 20px;
+}

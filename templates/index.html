@@ -3,12 +3,12 @@
 <head>
 	<meta charset="utf-8">
 	<title>Explore bikeshare data</title>
-  <link href="{{ url_for('static', filename='styles.css') }}" rel="stylesheet"/>
-  <link href="https://fonts.googleapis.com/css?family=VT323" rel="stylesheet">
+	<link href="{{ url_for('static', filename='styles.css') }}" rel="stylesheet"/>
+	<link href="https://fonts.googleapis.com/css?family=Roboto+Mono" rel="stylesheet">
 	<link rel="shortcut icon" href="{{ url_for('static', filename='favicon.ico') }}">
 </head>
 <body>
-  <h1>Explore bikeshare data</h1>
+	<h1>Explore bikeshare data</h1>
 	<form method="POST">
 		City: <select name="city">
 			<option value="all">All</option>
@@ -24,18 +24,34 @@
 			<option value="april">April</option>
 			<option value="may">May</option>
 			<option value="june">June</option>
-			<option value="july">July</option>
-			<option value="august">August</option>
-			<option value="september">September</option>
-			<option value="october">October</option>
-			<option value="november">November</option>
-			<option value="december">December</option>
 		</select>
 		Day: <select id="day" name="day">
 			<option value="all">All</option>
 			<option value="select month" disabled>Select month</option>
 		</select>
-    <input type="submit">
-</form>
-<script src="{{ url_for('static', filename='script.js') }}" ></script>
-</body>
+		<input type="submit">
+	</form>
+	<div class="output-metrics">
+		{% if data_metrics %}
+		<h1>City: {{data_metrics["city"].title()}} Month: {{data_metrics["month"].title()}}
+			Day: {{data_metrics["day"]}}</h1>
+			<h2>Trips taken:</h2>
+			<h3>Total trips: {{data_metrics["total trips"]}} Total hours: {{data_metrics["total hours"]}}
+				Average trip length: {{data_metrics["average minutes per trip"]}} minutes</h3>
+				<h2>Station breakdown:</h2>
+				<h3>Most popular start station: {{data_metrics["most popular start station"]}}</h3>
+				<h3>Most popular end station: {{data_metrics["most popular end station"]}}</h3>
+				<h3>Most popular trip: {{data_metrics["most popular trip"]}}</h3>
+				<h2>User breakdown:</h2>
+				<h3>Number of subscribers: {{data_metrics["number subscribers"]}}
+					Number of customers: {{data_metrics["number customers"]}}</h3>
+					{%if ("number males" in data_metrics) and ("most popular birth year" in data_metrics) %}
+					<h3>Number of males: {{data_metrics["number males"]}} Number of females:
+						{{data_metrics["number females"]}}</h3>
+						<h3>Percent reporting gender: %{{data_metrics["percent reporting gender"]}}</h3>
+						<h3>Most popular birth year: {{data_metrics["most popular birth year"]}}</h3>
+						{% endif %}
+						{% endif %}
+					</div>
+					<script src="{{ url_for('static', filename='script.js') }}" ></script>
+				</body>

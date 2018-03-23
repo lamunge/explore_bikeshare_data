@@ -9,6 +9,10 @@
 </head>
 <body>
 	<h1>Explore bikeshare data</h1>
+	<p>
+		Bike rental data from the first six months of 2017, provided by
+		<a href="https://www.motivateco.com/">Motivate</a>.
+	</p>
 	<form method="POST">
 		City: <select name="city">
 			<option value="all">All</option>
@@ -31,26 +35,27 @@
 		</select>
 		<input type="submit">
 	</form>
-	<div class="output-metrics">
+	<div class="output-metrics"><span></span>
 		{% if data_metrics %}
 		<h1>City: {{data_metrics["city"].title()}} Month: {{data_metrics["month"].title()}}
 			Day: {{data_metrics["day"]}}</h1>
 			<h2>Trips taken:</h2>
-			<h3>Total trips: {{data_metrics["total trips"]}} Total hours: {{data_metrics["total hours"]}}
-				Average trip length: {{data_metrics["average minutes per trip"]}} minutes</h3>
+			<h3><span>Total trips:</span> {{data_metrics["total trips"]}} <span>Total hours:</span> {{data_metrics["total hours"]}}
+				<span>Average trip length:</span> {{data_metrics["average minutes per trip"]}} minutes</h3>
 				<h2>Station breakdown:</h2>
-				<h3>Most popular start station: {{data_metrics["most popular start station"]}}</h3>
-				<h3>Most popular end station: {{data_metrics["most popular end station"]}}</h3>
-				<h3>Most popular trip: {{data_metrics["most popular trip"]}}</h3>
+				<h3><span>Most popular start station:</span> {{data_metrics["most popular start station"]}}</h3>
+				<h3><span>Most popular end station:</span> {{data_metrics["most popular end station"]}}</h3>
+				<h3><span>Most popular trip:</span> {{data_metrics["most popular trip"]}}</h3>
 				<h2>User breakdown:</h2>
-				<h3>Number of subscribers: {{data_metrics["number subscribers"]}}
-					Number of customers: {{data_metrics["number customers"]}}</h3>
+				<h3><span>Number of subscribers:</span> {{data_metrics["number subscribers"]}}
+					<span>Number of customers:</span> {{data_metrics["number customers"]}}</h3>
 					{%if ("number males" in data_metrics) and ("most popular birth year" in data_metrics) %}
-					<h3>Number of males: {{data_metrics["number males"]}} Number of females:
-						{{data_metrics["number females"]}}</h3>
-						<h3>Percent reporting gender: %{{data_metrics["percent reporting gender"]}}</h3>
-						<h3>Most popular birth year: {{data_metrics["most popular birth year"]}}</h3>
+					<h3><span>Number of males:</span> {{data_metrics["number males"]}} <span>Number of females:</span>
+						{{data_metrics["number females"]}} <span>Percent reporting gender:</span> {{data_metrics["percent reporting gender"]}}%</h3>
+						<h3><span>Most popular birth year:</span> {{data_metrics["most popular birth year"]}}
+							<span>Average birth year:</span> {{data_metrics["average birth year"]}}</h3>
 						{% endif %}
+						<img src="data:image/png;base64, {{plot}}" />
 						{% endif %}
 					</div>
 					<script src="{{ url_for('static', filename='script.js') }}" ></script>

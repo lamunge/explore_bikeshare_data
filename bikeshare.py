@@ -1,12 +1,20 @@
 from flask import Flask, render_template, request
 #from pyfladesk import init_gui
 import pandas as pd
+from numpy import arange
+import matplotlib
+matplotlib.use('Agg')
+import matplotlib.pyplot as plt
+from io import BytesIO
+import base64
+import urllib
 
 app = Flask(__name__)
 
 @app.route("/", methods=["GET", "POST"])
 def bikeshare():
-    data_metrics = {}
+    data_metrics = {} #need to declare these as empty b/c first request is "GET", but these still get passed to index.html
+    plot = None
     if request.form: #makes sure it is a "POST" request and prevents 400 error
         city = request.form['city']
         month = request.form['month']
@@ -63,8 +71,27 @@ def bikeshare():
             data_metrics["percent reporting gender"] = round((data_metrics["number males"] + data_metrics["number females"])/data_metrics["total trips"]*100, 2)
         if "Birth Year" in data.columns:
             data_metrics["most popular birth year"] = int(data["Birth Year"].mode()[0])
+            data_metrics["average birth year"] = int(data["Birth Year"].mean())
 
-    return render_template("index.html", data_metrics=data_metrics)
+        #create time of day activity histogram - following example in this gist: https://gist.github.com/tebeka/5426211
+        #and this stackoverflow answer: https://stackoverflow.com/questions/44091516/passing-a-plot-from-matpotlib-to-a-flask-view
+
+        #TODO: the basic plotting function for a simply x,y pair plot works! I just need to
+        #work on the below three lines to make a histogram. Probably a good idea to
+        #start with python in the terminal
+        num_rentals_by_hour = pd.Series(data["Start Time"].map(lambda x: x.hour))
+        fig = plt.figure()
+        figure_bins = arange(25)
+        plt.hist(num_rentals_by_hour, bins=figure_bins)
+        plt.title("Hourly rentals for selected data")
+        plt.xlabel("hour (in military time)")
+        plt.ylabel("number of rentals")
+        img = BytesIO() #create buffer
+        fig.savefig(img, format='png') #save figure to the buffer
+        img.seek(0) #rewind the buffer
+        plot = urllib.parse.quote(base64.b64encode(img.read()).decode()) #base64 encode and URL-escape
+
+    return render_template("index.html", data_metrics=data_metrics, plot=plot)
 
 if __name__ == '__main__':
     chicago = pd.read_csv("chicago.csv")
@@ -72,4 +99,4 @@ if __name__ == '__main__':
     washington = pd.read_csv("washington.csv")
     #init_gui(app)
 
-    app.run(debug=True)
+    app.run()

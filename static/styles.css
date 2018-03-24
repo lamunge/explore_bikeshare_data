@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 * {
     font-family: 'Roboto Mono', monospace;
     background-color: #272822;
@@ -36,7 +35,7 @@ button {
 }
 
 h1 {
-  font-size: 50px; /*To test how stylesheet was updating, I changed this to 200px briefly. For some ungodly reason, it has stayed at 200px no matter what I try*/
+  font-size: 50px; 
   color: #ea85f2;
 }
 
@@ -56,4 +55,3 @@ button {
   width: 55px;
   height: 20px;
 }
->>>>>>> da2690834aae322cc276ab8a5392fbee6a137e8b

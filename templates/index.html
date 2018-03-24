@@ -39,6 +39,9 @@
 		{% if data_metrics %}
 		<h1>City: {{data_metrics["city"].title()}} Month: {{data_metrics["month"].title()}}
 			Day: {{data_metrics["day"]}}</h1>
+			{% if ("day of the week" in data_metrics) %}
+				<h1>Day of the week: {{data_metrics["day of the week"]}}</h1>
+			{% endif %}
 			<h2>Trips taken:</h2>
 			<h3><span>Total trips:</span> {{data_metrics["total trips"]}} <span>Total hours:</span> {{data_metrics["total hours"]}}
 				<span>Average trip length:</span> {{data_metrics["average minutes per trip"]}} minutes</h3>

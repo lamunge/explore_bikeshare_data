@@ -34,10 +34,28 @@ def filter_by_month(data, month):
 
 def filter_by_day(data, day):
     #create another bool mask for day
-    start_mask = data["Start Time"].map(lambda x: x.day) == int(day)
-    end_mask = data["End Time"].map(lambda x: x.day) == int(day)
+    start_mask = data["Start Time"].map(lambda x: x.weekday_name) == day.title()
+    end_mask = data["End Time"].map(lambda x: x.weekday_name) == day.title()
     day_mask = [any(tup) for tup in zip(start_mask, end_mask)]
     data = data.loc[day_mask]
+    return data
+
+def filter_data(city, month, day):
+    #filter data by city
+    data = filter_by_city(city)
+
+    #convert start and end times to Timestamp
+    data["Start Time"] = data["Start Time"].apply(lambda x: pd.Timestamp(x))
+    data["End Time"] = data["End Time"].apply(lambda x: pd.Timestamp(x))
+
+    #filter data by month (data is only first 6 months of year)
+    if month != "all":
+        data = filter_by_month(data, month)
+
+    #filter by day of the month
+    if day != "all":
+        data = filter_by_day(data, day)
+
     return data
 
 def collect_data_metrics(data, data_metrics):
@@ -77,43 +95,50 @@ def create_histogram(hist_data):
 def bikeshare():
     data_metrics = {} #need to declare these as empty b/c first request is "GET", but these still get passed to index.html
     plot = None
+    data = None
     if request.form: #makes sure it is a "POST" request and prevents 400 error
         city = request.form['city']
         month = request.form['month']
         day = request.form['day']
 
-        #filter data by city
-        data = filter_by_city(city)
-
-        #convert start and end times to Timestamp
-        data["Start Time"] = data["Start Time"].apply(lambda x: pd.Timestamp(x))
-        data["End Time"] = data["End Time"].apply(lambda x: pd.Timestamp(x))
-
-        #filter data by month (data is only first 6 months of year)
-        if month != "all":
-            data = filter_by_month(data, month)
-
-        #filter by day of the month
-        if day != "all":
-            data = filter_by_day(data, day)
+        #filter data for specific city, month, and day
+        data = filter_data(city, month, day)
 
         #collect data metrics
         data_metrics['city'] = city
         data_metrics['month'] = month
         data_metrics['day'] = day
-        if day != "all":
-            data_metrics['day of the week'] = data.loc[data.index[0], "Start Time"].weekday_name
         data_metrics = collect_data_metrics(data, data_metrics)
 
         #create histogram of the number of rentals by hour of the day
         num_rentals_by_hour = pd.Series(data["Start Time"].map(lambda x: x.hour))
         plot = create_histogram(num_rentals_by_hour)
 
-    return render_template("index.html", data_metrics=data_metrics, plot=plot)
+    return render_template("index.html", data_metrics=data_metrics, plot=plot, data=data)
+
+@app.route("/raw_data", methods=["GET","POST"])
+def raw_data():
+    city = request.args.get('city')
+    month = request.args.get('month')
+    day = request.args.get('day')
+    counter = request.args.get('counter')
+    if city and month and day:
+        #you apparently cannot pass a pandas dataframe to a new url, so we have to filter the
+        #data a second time based on city, month, and day
+        data = filter_data(city, month, day)
+
+        #if this is from raw_data.html, we want the next 100 results, so we increment counter by 100
+        if request.method == "POST":
+            counter = int(counter) + 100
+
+        if int(counter) > data.shape[0]:
+            counter = data.shape[0] - 100
+
+    return render_template("raw_data.html", data_as_html=data.iloc[int(counter):int(counter) + 100, :].to_html(), city=city, month=month, day=day, counter=counter)
 
 if __name__ == '__main__':
     chicago = pd.read_csv("chicago.csv")
     new_york_city = pd.read_csv("new_york_city.csv")
     washington = pd.read_csv("washington.csv")
 
-    app.run()
+    app.run(debug="True")

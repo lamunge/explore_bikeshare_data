@@ -11,7 +11,7 @@
 	<h1>Explore bikeshare data</h1>
 	<p>
 		Bike rental data from the first six months of 2017, provided by
-		<a href="https://www.motivateco.com/">Motivate</a>.
+		<a href="https://www.motivateco.com/" target="_blank">Motivate</a>.
 	</p>
 	<form method="POST">
 		City: <select name="city">
@@ -20,7 +20,7 @@
 			<option value="chicago">Chicago</option>
 			<option value="washington dc">Washington DC</option>
 		</select>
-		Month: <select onchange="toggleDayOptions()" id="month" name="month">
+		Month: <select name="month">
 			<option value="all">All</option>
 			<option value="january">January</option>
 			<option value="february">February</option>
@@ -29,19 +29,22 @@
 			<option value="may">May</option>
 			<option value="june">June</option>
 		</select>
-		Day: <select id="day" name="day">
+		Day: <select name="day">
 			<option value="all">All</option>
-			<option value="select month" disabled>Select month</option>
+			<option value="monday">Monday</option>
+			<option value="tuesday">Tuesday</option>
+			<option value="wednesday">Wednesday</option>
+			<option value="thursday">Thursday</option>
+			<option value="friday">Friday</option>
+			<option value="saturday">Saturday</option>
+			<option value="sunday">Sunday</option>
 		</select>
-		<input type="submit">
+		<input type="submit"></input>
 	</form>
 	<div class="output-metrics"><span></span>
 		{% if data_metrics %}
 		<h1>City: {{data_metrics["city"].title()}} Month: {{data_metrics["month"].title()}}
-			Day: {{data_metrics["day"]}}</h1>
-			{% if ("day of the week" in data_metrics) %}
-				<h1>Day of the week: {{data_metrics["day of the week"]}}</h1>
-			{% endif %}
+			Day: {{data_metrics["day"].title()}}</h1>
 			<h2>Trips taken:</h2>
 			<h3><span>Total trips:</span> {{data_metrics["total trips"]}} <span>Total hours:</span> {{data_metrics["total hours"]}}
 				<span>Average trip length:</span> {{data_metrics["average minutes per trip"]}} minutes</h3>
@@ -59,7 +62,10 @@
 							<span>Average birth year:</span> {{data_metrics["average birth year"]}}</h3>
 						{% endif %}
 						<img src="data:image/png;base64, {{plot}}" />
+						<form>
+							{% set counter = 0 %}
+							<input type="button" value="Click here for raw data" onclick="window.location.href='{{ url_for('raw_data', city=data_metrics['city'], month=data_metrics['month'], day=data_metrics['day'], counter=counter) }}';"></input>
+						</form>
 						{% endif %}
 					</div>
-					<script src="{{ url_for('static', filename='script.js') }}" ></script>
 				</body>

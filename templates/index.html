@@ -64,7 +64,7 @@
 						<img src="data:image/png;base64, {{plot}}" />
 						<form>
 							{% set counter = 0 %}
-							<input type="button" value="Click here for raw data" onclick="window.location.href='{{ url_for('raw_data', city=data_metrics['city'], month=data_metrics['month'], day=data_metrics['day'], counter=counter) }}';"></input>
+							<a href="{{ url_for('raw_data', city=data_metrics['city'], month=data_metrics['month'], day=data_metrics['day'], from_raw_data=False, counter=0) }}">Click here for raw data</a>
 						</form>
 						{% endif %}
 					</div>

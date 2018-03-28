@@ -114,27 +114,26 @@ def bikeshare():
         num_rentals_by_hour = pd.Series(data["Start Time"].map(lambda x: x.hour))
         plot = create_histogram(num_rentals_by_hour)
 
-    return render_template("index.html", data_metrics=data_metrics, plot=plot, data=data)
+    return render_template("index.html", data_metrics=data_metrics, plot=plot)
 
-@app.route("/raw_data", methods=["GET","POST"])
-def raw_data():
-    city = request.args.get('city')
-    month = request.args.get('month')
-    day = request.args.get('day')
-    counter = request.args.get('counter')
-    if city and month and day:
-        #you apparently cannot pass a pandas dataframe to a new url, so we have to filter the
-        #data a second time based on city, month, and day
-        data = filter_data(city, month, day)
-
-        #if this is from raw_data.html, we want the next 100 results, so we increment counter by 100
-        if request.method == "POST":
-            counter = int(counter) + 100
+#This route displays the raw data, formatted as html. It is very expensive to call
+#pandas.DataFrame.to_html() on an up to 900,000-line dataframe, so instead I call it by 100 entries
+@app.route("/raw_data/<city>/<month>/<day>/<from_raw_data>/<counter>")
+def raw_data(city, month, day, from_raw_data, counter):
+    #there does not seem to be a way to pass a pandas dataframe to a different html template,
+    #so I am passing the city, month, year and re-filtering the data
+    data= filter_data(city, month, day)
+    if from_raw_data == "False":
+        counter = 0
+        return render_template("raw_data.html", data_as_html=data.iloc[int(counter):int(counter) + 100, :].to_html(), city=city, month=month, day=day, counter=counter)
+    if from_raw_data == "True":
+        # if this is from raw_data.html, we want the next 100 results, so we increment counter by 100
+        counter = int(counter) + 100
 
         if int(counter) > data.shape[0]:
             counter = data.shape[0] - 100
 
-    return render_template("raw_data.html", data_as_html=data.iloc[int(counter):int(counter) + 100, :].to_html(), city=city, month=month, day=day, counter=counter)
+        return render_template("raw_data.html", data_as_html=data.iloc[int(counter):int(counter) + 100, :].to_html(), city=city, month=month, day=day, counter=counter)
 
 if __name__ == '__main__':
     chicago = pd.read_csv("chicago.csv")

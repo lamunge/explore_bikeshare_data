@@ -8,12 +8,15 @@
 	<link rel="shortcut icon" href="{{ url_for('static', filename='favicon.ico') }}">
 </head>
 <body>
+	<form>
+		<input type="button" value="Next page of raw data" onclick="window.location.href='{{ url_for('raw_data', city=city, month=month, day=day, from_raw_data=True, counter=counter) }}';"></input>
+		<input type=button value="Start over" onclick="window.location.href='{{ url_for('bikeshare') }}';"></input>
+	</form>
   <h3>
-		<h1>Counter: {{counter}}</h1>
     {{ data_as_html | safe}}
   </h3>
-	<form method="POST">
-		<input type="submit" value="Next page of raw data" onclick="window.location.href='{{ url_for('raw_data', city=city, month=month, day=day, counter=counter) }}';"></input>
-		<!-- <input type=button value="Start over" onclick="window.location.href='{{ url_for('bikeshare') }}';"></input> -->
+	<form>
+		<input type="button" value="Next page of raw data" onclick="window.location.href='{{ url_for('raw_data', city=city, month=month, day=day, from_raw_data=True, counter=counter) }}';"></input>
+		<input type=button value="Start over" onclick="window.location.href='{{ url_for('bikeshare') }}';"></input>
 	</form>
 </body>
